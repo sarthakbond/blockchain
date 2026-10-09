@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fusion-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./fusion.db
+      - SECRET_KEY=fusion-dev-secret-key-replace-in-production
+      - CORS_ORIGINS=http://localhost:5173,http://localhost:3000
+      - BLOCKCHAIN_MODE=SIMULATED
+    volumes:
+      - ./backend/data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: fusion-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_PROXY=http://backend:8000
+    depends_on:
+      backend:
+        condition: service_healthy

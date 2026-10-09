@@ -1,0 +1,10 @@
+{
+  "name": "fusion-blockchain-demo",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "test": "pytest backend/tests/test_api.py -q",
+    "start:backend": "python -m uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000",
+    "start:frontend": "cd frontend && npm install && npm run dev -- --host 0.0.0.0 --port 5173"
+  }
+}
